@@ -16,6 +16,8 @@ namespace FuelApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddMemoryCache(); //adds caching for session values
+            services.AddSession(obj => obj.IdleTimeout = TimeSpan.FromMinutes(30)); //adds session capabilities
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

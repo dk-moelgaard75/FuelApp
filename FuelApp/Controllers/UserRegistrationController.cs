@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FuelApp.Models;
 using FuelApp.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FuelApp.Controllers
@@ -11,6 +12,7 @@ namespace FuelApp.Controllers
     public class UserRegistrationController : Controller
     {
         private IUserService _userService;
+        private string _sessionName = "_userGID";
         public UserRegistrationController(IUserService userService)
         {
             _userService = userService;
@@ -43,6 +45,7 @@ namespace FuelApp.Controllers
             if (loginOK)
             {
                 //TODO - set user GID as a sesion variable
+                HttpContext.Session.SetString()
                 ViewBag.Result = $"Login OK";
             }
             else

@@ -45,7 +45,7 @@ namespace FuelApp.Controllers
             if (loginOK)
             {
                 //TODO - set user GID as a sesion variable
-                HttpContext.Session.SetString()
+                HttpContext.Session.SetString(_sessionName,userModel.GID.ToString());
                 ViewBag.Result = $"Login OK";
             }
             else

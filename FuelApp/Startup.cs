@@ -35,6 +35,9 @@ namespace FuelApp
             //Ensures using .html og .js files
             app.UseStaticFiles();
 
+            //Use session for sessionvariables
+            app.UseSession();
+
             //Adding default route
             app.UseMvc(routes =>
                 {

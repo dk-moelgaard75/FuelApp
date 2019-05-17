@@ -1,8 +1,41 @@
-﻿
+﻿@using Microsoft.AspNetCore.Http;
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h2>Welcome to FuelApp - please select a menuitem</h2>
+<h3>User section</h3>
+<a asp-area="" asp-controller="UserRegistration" asp-action="Index">Create user</a>
+<br />
+<a asp-area="" asp-controller="UserRegistration" asp-action="Login">Login</a>
+<br />
+<a asp-area="" asp-controller="UserRegistration" asp-action="Logout">Logout</a>
 
+<br />
+<br />
+
+@if (Context.Session.GetString("_userGID") != null && Context.Session.GetString("_userGID").Length > 0)
+{
+    <h3>Vehicle section</h3>
+    <!--
+    <a asp-area="" asp-controller="UserRegistration" asp-action="Index">Add vehicle</a>
+    <br />
+    <a asp-area="" asp-controller="UserRegistration" asp-action="Login">Edit vehicle</a>
+    <br />
+    <br />
+    -->
+    <h3>Fueling section</h3>
+    <!--
+    <a asp-area="" asp-controller="UserRegistration" asp-action="Index">Add fueling data</a>
+    <br />
+    <a asp-area="" asp-controller="UserRegistration" asp-action="Login">Edit fueling data</a>
+    <br />
+    <br />
+        -->
+
+}
+else
+{
+
+}

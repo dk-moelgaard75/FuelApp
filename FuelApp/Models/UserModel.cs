@@ -8,7 +8,7 @@ namespace FuelApp.Models
 {
     public class UserModel
     {
-        //Decorate for DB ID
+        //TODO - add decorate for DB ID
         public int Id { get; set; }
         public Guid GID { get; set; }
 
@@ -18,12 +18,10 @@ namespace FuelApp.Models
         [Required]
         public string LastName { get; set; }
 
-        [DataType(DataType.EmailAddress)]
-        [Required]
+        [Required(), DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
-        [DataType(DataType.Password)]
-        [Required]
+        [Required(), DataType(DataType.Password)]
         public string Password { get; set; }
 
         public bool IsEmailConfirmed { get; set; }

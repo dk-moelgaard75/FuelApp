@@ -26,20 +26,23 @@ namespace FuelApp.Services
             _userStore.Add(userModel);
             return Task.FromResult(true);
         }
-        public Task<bool> Login(UserModel userModel)
+        public Task<UserModel> Login(UserModel userModel)
         {
-            //TODO - check email and password with DB
+            //TODO - check email,password and confirmation with DB
 
             //For now - just use ConcurrentBag
-            UserModel tmpModel = _userStore.FirstOrDefault(u => u.Email == userModel.Email && u.Password == userModel.Password);
-            if(tmpModel != null)
+            UserModel tmpModel = _userStore.FirstOrDefault(u => u.Email == userModel.Email && u.Password == userModel.Password && u.IsEmailConfirmed);
+            return Task.FromResult(tmpModel);
+            /*
+            if (tmpModel != null)
             {
-                return Task.FromResult(true);
+                return Task.FromResult(tmpModel);
             }
             else
             {
                 return Task.FromResult(false);
             }
+            */
         }
     }
 }

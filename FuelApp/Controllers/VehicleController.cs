@@ -13,7 +13,6 @@ namespace FuelApp.Controllers
     public class VehicleController : Controller
     {
         private IVehicleService _vehicleService;
-        private string _sessionName = "_userGID";
         public VehicleController(IVehicleService vehicleService)
         {
             _vehicleService = vehicleService;
@@ -35,7 +34,36 @@ namespace FuelApp.Controllers
             }
             vehicleModel.UserGID = guidOutput;
             await _vehicleService.RegisterVehicle(vehicleModel);
+            ViewBag.Result = "Vehicle created";
             return View();
         }
+        public async Task<IActionResult> HandleVehicle()
+        {
+            return View(await _vehicleService.GetVehicles());
+        }
+
+        public async Task<IActionResult> Edit(string ID)
+        {
+            //Get vehicleModel from DBContex
+
+            VehicleModel vehicleModel = await _vehicleService.GetVehicleByGID(ID);
+//            await _vehicleService.RegisterVehicle(vehicleModel);
+            return View(vehicleModel);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Edit(VehicleModel vehicleModel)
+        {
+            await _vehicleService.UpdateVehicle(vehicleModel);
+            ViewBag.Result = "Vehicle updated";
+            return View(vehicleModel);
+        }
+        public async void Delete(string ID)
+        {
+            VehicleModel vehicleModel = await _vehicleService.GetVehicleByGID(ID);
+            await _vehicleService.DeleteVehicle(vehicleModel);
+            //TODO - why does this fails?
+            RedirectToAction("Vehicle", "Edit");
+        }
+
     }
 }

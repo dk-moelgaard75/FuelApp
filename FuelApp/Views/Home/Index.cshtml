@@ -18,13 +18,13 @@
 @if (Context.Session.GetString("_userGID") != null && Context.Session.GetString("_userGID").Length > 0)
 {
     <h3>Vehicle section</h3>
-    <!--
-    <a asp-area="" asp-controller="UserRegistration" asp-action="Index">Add vehicle</a>
+    
+    <a asp-area="" asp-controller="Vehicle" asp-action="Index">Add vehicle</a>
     <br />
-    <a asp-area="" asp-controller="UserRegistration" asp-action="Login">Edit vehicle</a>
+    <a asp-area="" asp-controller="Vehicle" asp-action="HandleVehicle">Edit vehicle</a>
     <br />
     <br />
-    -->
+    
     <h3>Fueling section</h3>
     <!--
     <a asp-area="" asp-controller="UserRegistration" asp-action="Index">Add fueling data</a>

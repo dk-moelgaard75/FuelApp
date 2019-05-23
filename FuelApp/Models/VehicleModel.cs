@@ -29,6 +29,9 @@ namespace FuelApp.Models
         public string Model { get; set; }
 
         [Required]
+        public string Licensplate { get; set; }
+
+        [Required]
         [EnumDataType(typeof(Fuel))]
         public Fuel FuelType { get; set; }
         

@@ -35,6 +35,7 @@ namespace FuelApp.Controllers
             vehicleModel.UserGID = guidOutput;
             await _vehicleService.RegisterVehicle(vehicleModel);
             ViewBag.Result = "Vehicle created";
+            HttpContext.Session.SetString(SessionUtil.SessionVehicleSet, "true");
             return View();
         }
         public async Task<IActionResult> HandleVehicle()
@@ -57,12 +58,17 @@ namespace FuelApp.Controllers
             ViewBag.Result = "Vehicle updated";
             return View(vehicleModel);
         }
-        public async void Delete(string ID)
+        public async Task<IActionResult> Delete(string ID)
         {
             VehicleModel vehicleModel = await _vehicleService.GetVehicleByGID(ID);
             await _vehicleService.DeleteVehicle(vehicleModel);
-            //TODO - why does this fails?
-            RedirectToAction("Vehicle", "Edit");
+            List<VehicleModel> vehicles = await _vehicleService.GetVehicles();
+            if (vehicles.Count == 0)
+            {
+                HttpContext.Session.SetString(SessionUtil.SessionVehicleSet, "");
+            }
+            
+            return Redirect("/Vehicle/HandleVehicle");
         }
 
     }

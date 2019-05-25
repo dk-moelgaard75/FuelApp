@@ -21,6 +21,7 @@ namespace FuelApp
             services.AddSession(obj => obj.IdleTimeout = TimeSpan.FromMinutes(30)); //adds session capabilities
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<IVehicleService, VehicleService>();
+            services.AddSingleton<IFuelingService, FuelingService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

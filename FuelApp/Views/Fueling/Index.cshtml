@@ -1,0 +1,54 @@
+﻿@model FuelApp.Models.FuelingModel
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<h4>FuelingModel</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Index">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="VehicleGID" class="control-label">Select vehicle</label>
+                <select asp-for="VehicleGID" class="form-control" asp-items="ViewBag.Vehicles"></select>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="GasStation" class="control-label"></label>
+                <input asp-for="GasStation" class="form-control" />
+                <span asp-validation-for="GasStation" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FuelAmount" class="control-label"></label>
+                <input asp-for="FuelAmount" class="form-control" />
+                <span asp-validation-for="FuelAmount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TotalPrice" class="control-label"></label>
+                <input asp-for="TotalPrice" class="form-control" />
+                <span asp-validation-for="TotalPrice" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Mileage" class="control-label"></label>
+                <input asp-for="Mileage" class="form-control" />
+                <span asp-validation-for="Mileage" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Add" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+<div>
+    <h3>@Html.Raw(ViewBag.Result)</h3>
+</div>
+
+<div>
+    <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Home</a>
+</div>
+

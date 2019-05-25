@@ -18,24 +18,28 @@
 @if (Context.Session.GetString("_userGID") != null && Context.Session.GetString("_userGID").Length > 0)
 {
     <h3>Vehicle section</h3>
-    
+
     <a asp-area="" asp-controller="Vehicle" asp-action="Index">Add vehicle</a>
     <br />
     <a asp-area="" asp-controller="Vehicle" asp-action="HandleVehicle">Edit vehicle</a>
     <br />
     <br />
-    
-    <h3>Fueling section</h3>
-    <!--
-    <a asp-area="" asp-controller="UserRegistration" asp-action="Index">Add fueling data</a>
-    <br />
-    <a asp-area="" asp-controller="UserRegistration" asp-action="Login">Edit fueling data</a>
-    <br />
-    <br />
-        -->
 
+    <h3>Fueling section</h3>
+    @if (Context.Session.GetString("_vehiclesIsSet") != null && Context.Session.GetString("_vehiclesIsSet") == "true")
+    {
+        <a asp-area="" asp-controller="Fueling" asp-action="Index">Add fueling</a>
+        <br />
+        <a asp-area="" asp-controller="Fueling" asp-action="Edit">Edit fueling data</a>
+        <br />
+        <br />
+    }
+    else
+    {
+        <div>Please add one or more vehicles in order to add fuelingdata</div>
+    }
 }
 else
 {
-
+    <div>Please add a user and login in order to add vehicles</div>
 }

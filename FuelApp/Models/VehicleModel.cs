@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FuelApp.Models
 {
@@ -38,5 +39,13 @@ namespace FuelApp.Models
         [Required]
         public int FuelTankSize { get; set; }
 
+        [NotMapped]
+        public string GetVehicleIdentification
+        {
+            get
+            {
+                return Brand + " - " + Model + " (" + Licensplate + ")";
+            }
+        }
     }
 }

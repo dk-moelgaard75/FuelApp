@@ -14,7 +14,14 @@ namespace FuelApp.Utility
                 return "_userGID";
             }
         }
-            
+
+        public static string SessionVehicleSet
+        {
+            get
+            {
+                return "_vehiclesIsSet";
+            }
+        }
 
     }
 }

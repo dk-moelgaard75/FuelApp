@@ -66,6 +66,14 @@ namespace FuelApp.Controllers
             ViewBag.Result = "Fueling updated";
             return View(fuelingModel);
         }
+        public async Task<IActionResult> Delete(string ID)
+        {
+            FuelingModel fuelingModel = await _fuelingService.GetFuelingByGID(ID);
+            //await _vehicleService.DeleteVehicle(vehicleModel);
+            await _fuelingService.DeleteFueling(fuelingModel);
+
+            return Redirect("/Fueling/HandleFueling");
+        }
 
     }
 }

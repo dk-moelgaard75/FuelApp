@@ -1,4 +1,6 @@
-﻿using FuelApp.Models;
+﻿using FuelApp.Data;
+using FuelApp.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -11,10 +13,15 @@ namespace FuelApp.Services
     public class VehicleService : IVehicleService
     {
         private static List<VehicleModel> _vehicleStore;
-        
-        public VehicleService()
+        private static DbContextOptions<VehicleDbContext> _dbContextOptions;
+        public VehicleService(DbContextOptions<VehicleDbContext> dbContextOptions)
         {
             _vehicleStore = new List<VehicleModel>();
+            _dbContextOptions = dbContextOptions;
+            VehicleDbContext _vehicleDbContext = new VehicleDbContext(_dbContextOptions);
+            _vehicleDbContext.Database.EnsureCreated();
+
+
         }
         public Task<List<VehicleModel>> GetVehicles()
         {

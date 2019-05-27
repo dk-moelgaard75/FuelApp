@@ -1,4 +1,6 @@
-﻿using FuelApp.Models;
+﻿using FuelApp.Data;
+using FuelApp.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +11,14 @@ namespace FuelApp.Services
     public class FuelingService : IFuelingService
     {
         private static List<FuelingModel> _fuelingStore;
-        public FuelingService()
+        private static DbContextOptions<FuelingDbContext> _dbContextOptions;
+        public FuelingService(DbContextOptions<FuelingDbContext> dbContextOptions)
         {
             _fuelingStore = new List<FuelingModel>();
+            _dbContextOptions = dbContextOptions;
+            FuelingDbContext _fuelingDbContext = new FuelingDbContext(_dbContextOptions);
+            _fuelingDbContext.Database.EnsureCreated();
+
         }
         public Task<bool> AddFueling(FuelingModel fuelingModel)
         {

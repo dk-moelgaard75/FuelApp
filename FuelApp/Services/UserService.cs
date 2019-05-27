@@ -1,4 +1,6 @@
-﻿using FuelApp.Models;
+﻿using FuelApp.Data;
+using FuelApp.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -10,10 +12,15 @@ namespace FuelApp.Services
     public class UserService : IUserService
     {
         private static ConcurrentBag<UserModel> _userStore;
-        public UserService()
+        private static DbContextOptions<UserDbContext> _dbContextOptions;
+        public UserService(DbContextOptions<UserDbContext> dbContextOptions)
         {
             _userStore = new ConcurrentBag<UserModel>();
+            _dbContextOptions = dbContextOptions;
+            UserDbContext _userDbContext = new UserDbContext(_dbContextOptions);
+            _userDbContext.Database.EnsureCreated();
         }
+
         public Task<bool> RegisterUser(UserModel userModel)
         {
             //TODO - check for empty GUID and create one if empty

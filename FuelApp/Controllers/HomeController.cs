@@ -12,5 +12,10 @@ namespace FuelApp.Controllers
         {
             return View();
         }
+        public IActionResult Error()
+        {
+            return View();
+        }
+
     }
 }

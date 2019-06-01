@@ -7,5 +7,7 @@ namespace FuelApp.Services
     {
         Task<UserModel> Login(UserModel userModel);
         Task<bool> RegisterUser(UserModel userModel);
+        Task<bool> IsEmailRegistered(UserModel userModel);
+        Task<bool> ConfirmEmail(string id);
     }
 }

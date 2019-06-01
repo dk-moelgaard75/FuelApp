@@ -28,15 +28,16 @@
                 <input asp-for="Licensplate" class="form-control" />
                 <span asp-validation-for="Model" class="text-danger"></span>
             </div>
+            
             <div class="form-group">
                 <label asp-for="FuelType" class="control-label"></label>
                 <br />
-                <!--<input asp-for="FuelType" class="form-control" /> -->
-                <select asp-for="FuelType" asp-items="Html.GetEnumSelectList<FuelApp.Models.Fuel>()">
+                <select asp-for="FuelType" asp-items="Html.GetEnumSelectList<FuelApp.Utility.EnumUtil.Fuel>()">
                     <option selected="selected" value="">Please select</option>
                 </select>
                 <span asp-validation-for="FuelType" class="text-danger"></span>
             </div>
+        
             <div class="form-group">
                 <label asp-for="FuelTankSize" class="control-label"></label>
                 <input asp-for="FuelTankSize" class="form-control" />

@@ -4,20 +4,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using FuelApp.Utility;
+using static FuelApp.Utility.EnumUtil;
 
 namespace FuelApp.Models
 {
-    public enum Fuel
-    {
-        Gasoline,
-        Diesel,
-        Electricity,
-        Hydrogen,
-        Other
-    }
+    
     public class VehicleModel
     {
-        //TODO - add decorate for DB ID
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public Guid GID { get; set; }
 
@@ -32,13 +27,15 @@ namespace FuelApp.Models
         [Required]
         public string Licensplate { get; set; }
 
+        
         [Required]
-        [EnumDataType(typeof(Fuel))]
+        [EnumDataType(typeof(EnumUtil.Fuel))]
         public Fuel FuelType { get; set; }
         
         [Required]
         public int FuelTankSize { get; set; }
 
+        
         [NotMapped]
         public string GetVehicleIdentification
         {
@@ -47,5 +44,6 @@ namespace FuelApp.Models
                 return Brand + " - " + Model + " (" + Licensplate + ")";
             }
         }
+        
     }
 }

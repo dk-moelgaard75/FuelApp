@@ -8,7 +8,7 @@ namespace FuelApp.Models
 {
     public class FuelingModel
     {
-        //TODO - add decorate for DB ID
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public Guid GID { get; set; }
 

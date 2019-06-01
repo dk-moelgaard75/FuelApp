@@ -4,11 +4,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using FuelApp.Models;
 using FuelApp.Services;
+using FuelApp.Utility;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace FuelApp.Controllers
 {
+    [Authorize]
     public class FuelingController : Controller
     {
         private IVehicleService _vehicleService;
@@ -22,7 +26,8 @@ namespace FuelApp.Controllers
         {
             //for later user:
             //var vehicles = await _context.Vehicles.Where(t => t.UserGID == <Session value for userGID).ToListAsync();
-            List<VehicleModel> vehicles = await _vehicleService.GetVehicles();
+            var userId = HttpContext.Session.GetString(SessionUtil.SessionGuidName);
+            List<VehicleModel> vehicles = await _vehicleService.GetVehicles(userId);
             ViewData["Vehicles"] = new SelectList(vehicles, "GID", "GetVehicleIdentification");
             return View();
         }
@@ -31,7 +36,8 @@ namespace FuelApp.Controllers
         {
             //for later user:
             //var vehicles = await _context.Vehicles.Where(t => t.UserGID == <Session value for userGID).ToListAsync();
-            List<VehicleModel> vehicles = await _vehicleService.GetVehicles();
+            var userId = HttpContext.Session.GetString(SessionUtil.SessionGuidName);
+            List<VehicleModel> vehicles = await _vehicleService.GetVehicles(userId);
             ViewData["Vehicles"] = new SelectList(vehicles, "GID", "GetVehicleIdentification");
             await _fuelingService.AddFueling(fuelModel);
             ViewBag.Result = $"Fueling registered"; 
@@ -40,22 +46,38 @@ namespace FuelApp.Controllers
         
         public async Task<IActionResult> HandleFueling()
         {
-            List<FuelingModel> list = await _fuelingService.GetFuelings();
+            var userId = HttpContext.Session.GetString(SessionUtil.SessionGuidName);
+            List<VehicleModel> vehicles = await _vehicleService.GetVehicles(userId);
+            List<Guid> guidlist = new List<Guid>();
+            foreach (VehicleModel model in vehicles)
+            {
+                guidlist.Add(model.GID);
+            }
+            List<FuelingModel> list = await _fuelingService.GetFuelings(guidlist);
             foreach(var fueling in list)
             {
-                VehicleModel vehcile = await _vehicleService.GetVehicleByGID(fueling.VehicleGID.ToString());
-                fueling.VehicleName = vehcile.GetVehicleIdentification;
+                VehicleModel vehicle = await _vehicleService.GetVehicleByGID(fueling.VehicleGID.ToString());
+                //TODO - implement code to delete fueling data, once a vehicle is deleted
+                if (vehicle != null)
+                {
+                    fueling.VehicleName = vehicle.GetVehicleIdentification;
+                }
+                else
+                {
+                    fueling.VehicleName = "VEHICLE DELETED";
+                }
+                
             }
             return View(list);
         }
-        public async Task<IActionResult> Edit(string ID)
+        public async Task<IActionResult> Edit(int ID)
         {
             //Get vehicleModel from DBContex
-            List<VehicleModel> vehicles = await _vehicleService.GetVehicles();
+            var userId = HttpContext.Session.GetString(SessionUtil.SessionGuidName);
+            List<VehicleModel> vehicles = await _vehicleService.GetVehicles(userId);
             ViewData["Vehicles"] = new SelectList(vehicles, "GID", "GetVehicleIdentification");
 
-            FuelingModel fuelingModel = await _fuelingService.GetFuelingByGID(ID);
-            //            await _vehicleService.RegisterVehicle(vehicleModel);
+            FuelingModel fuelingModel = await _fuelingService.GetFuelingByID(ID);
             return View(fuelingModel);
         }
         [HttpPost]
@@ -66,12 +88,9 @@ namespace FuelApp.Controllers
             ViewBag.Result = "Fueling updated";
             return View(fuelingModel);
         }
-        public async Task<IActionResult> Delete(string ID)
+        public async Task<IActionResult> Delete(int ID)
         {
-            FuelingModel fuelingModel = await _fuelingService.GetFuelingByGID(ID);
-            //await _vehicleService.DeleteVehicle(vehicleModel);
-            await _fuelingService.DeleteFueling(fuelingModel);
-
+            await _fuelingService.DeleteFueling(ID);
             return Redirect("/Fueling/HandleFueling");
         }
 

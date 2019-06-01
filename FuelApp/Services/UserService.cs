@@ -11,14 +11,17 @@ namespace FuelApp.Services
 {
     public class UserService : IUserService
     {
-        private static ConcurrentBag<UserModel> _userStore;
+        
         private static DbContextOptions<UserDbContext> _dbContextOptions;
-        public UserService(DbContextOptions<UserDbContext> dbContextOptions)
+        private static DbContextOptions<FuelAppDbContext> _dbAppContextOptions;
+        public UserService(DbContextOptions<UserDbContext> dbContextOptions, DbContextOptions<FuelAppDbContext> dbAppContextOptions)
         {
-            _userStore = new ConcurrentBag<UserModel>();
             _dbContextOptions = dbContextOptions;
-            UserDbContext _userDbContext = new UserDbContext(_dbContextOptions);
-            _userDbContext.Database.EnsureCreated();
+            _dbAppContextOptions = dbAppContextOptions;
+            //UserDbContext userDbContext = new UserDbContext(_dbContextOptions);
+            //userDbContext.Database.EnsureCreated();
+            FuelAppDbContext fuelAppDbContext = new FuelAppDbContext(_dbAppContextOptions);
+            fuelAppDbContext.Database.EnsureCreated();
         }
 
         public Task<bool> RegisterUser(UserModel userModel)
@@ -30,26 +33,48 @@ namespace FuelApp.Services
             }
             //TODO - add user to DB
             //Temporary add user to ConcurrentBag
-            _userStore.Add(userModel);
+            //_userStore.Add(userModel);
+
+            //UserDbContext userDbContext = new UserDbContext(_dbAppContextOptions);
+            //userDbContext.Add(userModel);
+            //userDbContext.
+            FuelAppDbContext appDbContext = new FuelAppDbContext(_dbAppContextOptions);
+            appDbContext.Users.Add(userModel);
+            appDbContext.SaveChanges();
             return Task.FromResult(true);
         }
         public Task<UserModel> Login(UserModel userModel)
         {
             //TODO - check email,password and confirmation with DB
+            UserDbContext _userDbContext = new UserDbContext(_dbContextOptions);
+            UserModel existingUser = _userDbContext.Users.FirstOrDefault(u => u.Email == userModel.Email && u.Password == userModel.Password && u.IsEmailConfirmed);
+            return Task.FromResult(existingUser);
+        }
+        public Task<bool> IsEmailRegistered(UserModel userModel)
+        {
+            UserDbContext _userDbContext = new UserDbContext(_dbContextOptions);
+            UserModel existingUser = _userDbContext.Users.FirstOrDefault(u => u.Email == userModel.Email);
+            return Task.FromResult(existingUser != null ? true : false);
 
-            //For now - just use ConcurrentBag
-            UserModel tmpModel = _userStore.FirstOrDefault(u => u.Email == userModel.Email && u.Password == userModel.Password && u.IsEmailConfirmed);
-            return Task.FromResult(tmpModel);
-            /*
-            if (tmpModel != null)
+        }
+        public Task<bool> ConfirmEmail(string id)
+        {
+            Guid guid = Guid.Parse(id);
+            UserDbContext userDbContext = new UserDbContext(_dbContextOptions);
+            UserModel existingUser = userDbContext.Users.FirstOrDefault(u => u.GID == guid);
+
+            if (existingUser != null)
             {
-                return Task.FromResult(tmpModel);
+                existingUser.IsEmailConfirmed = true;
+                existingUser.EmailConfirmationDate = DateTime.Now;
+                userDbContext.SaveChanges();
+                return Task.FromResult(true);
             }
             else
             {
                 return Task.FromResult(false);
             }
-            */
         }
+
     }
 }

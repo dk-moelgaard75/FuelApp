@@ -36,9 +36,7 @@
                 <div class="form-group">
                     <label asp-for="FuelType" class="control-label"></label>
                     <br />
-                    <!--<input asp-for="FuelType" class="form-control" /> -->
-                    <select asp-for="FuelType" asp-items="Html.GetEnumSelectList<FuelApp.Models.Fuel>()">
-                    </select>
+                    <select asp-for="FuelType" asp-items="Html.GetEnumSelectList<FuelApp.Utility.EnumUtil.Fuel>()"></select>
                     <span asp-validation-for="FuelType" class="text-danger"></span>
                 </div>
             </div>

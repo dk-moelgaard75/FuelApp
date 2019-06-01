@@ -9,14 +9,14 @@ namespace FuelApp.Data
 {
     public class VehicleDbContext : DbContext
     {
-        public DbSet<VehicleModel> Users { get; set; }
+        public DbSet<VehicleModel> Vehicles { get; set; }
         public VehicleDbContext(DbContextOptions<VehicleDbContext> dbContextOptions) : base(dbContextOptions)
         {
 
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<UserModel>().ToTable("vehicles");
+            modelBuilder.Entity<VehicleModel>().ToTable("vehicles");
         }
     }
 }

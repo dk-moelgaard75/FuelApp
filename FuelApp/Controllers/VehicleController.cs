@@ -5,11 +5,13 @@ using System.Threading.Tasks;
 using FuelApp.Models;
 using FuelApp.Services;
 using FuelApp.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FuelApp.Controllers
 {
+    [Authorize]
     public class VehicleController : Controller
     {
         private IVehicleService _vehicleService;
@@ -40,14 +42,15 @@ namespace FuelApp.Controllers
         }
         public async Task<IActionResult> HandleVehicle()
         {
-            return View(await _vehicleService.GetVehicles());
+            var userId = HttpContext.Session.GetString(SessionUtil.SessionGuidName);
+            return View(await _vehicleService.GetVehicles(userId));
         }
 
-        public async Task<IActionResult> Edit(string ID)
+        public async Task<IActionResult> Edit(int ID)
         {
             //Get vehicleModel from DBContex
 
-            VehicleModel vehicleModel = await _vehicleService.GetVehicleByGID(ID);
+            VehicleModel vehicleModel = await _vehicleService.GetVehicleByID(ID);
 //            await _vehicleService.RegisterVehicle(vehicleModel);
             return View(vehicleModel);
         }
@@ -58,11 +61,12 @@ namespace FuelApp.Controllers
             ViewBag.Result = "Vehicle updated";
             return View(vehicleModel);
         }
-        public async Task<IActionResult> Delete(string ID)
+        public async Task<IActionResult> Delete(int ID)
         {
-            VehicleModel vehicleModel = await _vehicleService.GetVehicleByGID(ID);
-            await _vehicleService.DeleteVehicle(vehicleModel);
-            List<VehicleModel> vehicles = await _vehicleService.GetVehicles();
+            //VehicleModel vehicleModel = await _vehicleService.GetVehicleByID(ID);
+            await _vehicleService.DeleteVehicle(ID);
+            var userId = HttpContext.Session.GetString(SessionUtil.SessionGuidName);
+            List<VehicleModel> vehicles = await _vehicleService.GetVehicles(userId);
             if (vehicles.Count == 0)
             {
                 HttpContext.Session.SetString(SessionUtil.SessionVehicleSet, "");

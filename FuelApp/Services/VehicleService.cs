@@ -1,5 +1,6 @@
 ﻿using FuelApp.Data;
 using FuelApp.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Concurrent;
@@ -12,26 +13,50 @@ namespace FuelApp.Services
 {
     public class VehicleService : IVehicleService
     {
-        private static List<VehicleModel> _vehicleStore;
-        private static DbContextOptions<VehicleDbContext> _dbContextOptions;
-        public VehicleService(DbContextOptions<VehicleDbContext> dbContextOptions)
+        //private static DbContextOptions<VehicleDbContext> _dbContextOptions;
+        private static DbContextOptions<FuelAppDbContext> _dbAppContextOptions;
+        public VehicleService(DbContextOptions<FuelAppDbContext> dbContextOptions)
         {
-            _vehicleStore = new List<VehicleModel>();
-            _dbContextOptions = dbContextOptions;
-            VehicleDbContext _vehicleDbContext = new VehicleDbContext(_dbContextOptions);
-            _vehicleDbContext.Database.EnsureCreated();
-
+            _dbAppContextOptions = dbContextOptions;
+            //VehicleDbContext vehicleDbContext = new VehicleDbContext(_dbContextOptions);
+            //vehicleDbContext.Database.EnsureCreated();
+            
 
         }
-        public Task<List<VehicleModel>> GetVehicles()
+        public Task<List<VehicleModel>> GetVehicles(string userId)
         {
-            return Task.FromResult(_vehicleStore.ToList());
+            //Get user GID from session
+            Guid curGID = Guid.Empty;
+            Guid.TryParse(userId, out curGID);
+
+            FuelAppDbContext dbContext  = new FuelAppDbContext(_dbAppContextOptions);
+
+            List<VehicleModel> list = dbContext.Vehicles.Where(v => v.UserGID == curGID).ToList();
+            return Task.FromResult(list);
         }
         public Task<VehicleModel> GetVehicleByGID(string gid)
         {
+
             Guid curGID = Guid.Empty;
             Guid.TryParse(gid, out curGID);
-            return Task.FromResult(_vehicleStore.FirstOrDefault(u => u.GID == curGID));
+            //VehicleDbContext dbContext = new VehicleDbContext(_dbContextOptions);
+            FuelAppDbContext dbContext = new FuelAppDbContext(_dbAppContextOptions);
+            VehicleModel existingModel = dbContext.Vehicles.FirstOrDefault(u => u.GID == curGID);
+
+            return Task.FromResult(existingModel);
+
+        }
+        public Task<VehicleModel> GetVehicleByID(int id) //string gid)
+        {
+            /*
+            Guid curGID = Guid.Empty;
+            Guid.TryParse(gid, out curGID);
+            */
+            //VehicleDbContext dbContext = new VehicleDbContext(_dbContextOptions);
+            FuelAppDbContext dbContext = new FuelAppDbContext(_dbAppContextOptions);
+            VehicleModel existingModel = dbContext.Vehicles.FirstOrDefault(u => u.Id == id);
+
+            return Task.FromResult(existingModel);
         }
         public Task<bool> RegisterVehicle(VehicleModel vehicleModel)
         {
@@ -39,19 +64,32 @@ namespace FuelApp.Services
             {
                 vehicleModel.GID = Guid.NewGuid();
             }
-            _vehicleStore.Add(vehicleModel);
+            //_vehicleStore.Add(vehicleModel);
+            FuelAppDbContext dbContext = new FuelAppDbContext(_dbAppContextOptions);
+            //VehicleDbContext vehicleDbContext = new VehicleDbContext(_dbContextOptions);
+            dbContext.Vehicles.Add(vehicleModel);
+            dbContext.SaveChanges();
+
             return Task.FromResult(true);
         }
         public Task<bool> UpdateVehicle(VehicleModel vehicleModel)
         {
-            var itemIndex = _vehicleStore.FindIndex(x => x.GID == vehicleModel.GID);
-            _vehicleStore[itemIndex] = vehicleModel;
+            FuelAppDbContext dbContext = new FuelAppDbContext(_dbAppContextOptions);
+            dbContext.Vehicles.Update(vehicleModel);
+            dbContext.SaveChanges();
             return Task.FromResult(true);
         }
-        public Task<bool> DeleteVehicle(VehicleModel vehicleModel)
+        public Task<bool> DeleteVehicle(int id) //VehicleModel vehicleModel)
         {
-            var itemIndex = _vehicleStore.FindIndex(x => x.GID == vehicleModel.GID);
-            _vehicleStore.RemoveAt(itemIndex);
+            //VehicleDbContext dbContext = new VehicleDbContext(_dbContextOptions);
+            FuelAppDbContext dbContext = new FuelAppDbContext(_dbAppContextOptions);
+            VehicleModel existingModel = dbContext.Vehicles.FirstOrDefault(u => u.Id == id);
+
+            if (existingModel != null)
+            {
+                dbContext.Remove(existingModel);
+                dbContext.SaveChanges();
+            }
             return Task.FromResult(true);
         }
 

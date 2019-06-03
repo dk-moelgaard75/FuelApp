@@ -13,19 +13,13 @@ namespace FuelApp.Services
 {
     public class VehicleService : IVehicleService
     {
-        //private static DbContextOptions<VehicleDbContext> _dbContextOptions;
         private static DbContextOptions<FuelAppDbContext> _dbAppContextOptions;
         public VehicleService(DbContextOptions<FuelAppDbContext> dbContextOptions)
         {
             _dbAppContextOptions = dbContextOptions;
-            //VehicleDbContext vehicleDbContext = new VehicleDbContext(_dbContextOptions);
-            //vehicleDbContext.Database.EnsureCreated();
-            
-
         }
         public Task<List<VehicleModel>> GetVehicles(string userId)
         {
-            //Get user GID from session
             Guid curGID = Guid.Empty;
             Guid.TryParse(userId, out curGID);
 
@@ -39,20 +33,14 @@ namespace FuelApp.Services
 
             Guid curGID = Guid.Empty;
             Guid.TryParse(gid, out curGID);
-            //VehicleDbContext dbContext = new VehicleDbContext(_dbContextOptions);
             FuelAppDbContext dbContext = new FuelAppDbContext(_dbAppContextOptions);
             VehicleModel existingModel = dbContext.Vehicles.FirstOrDefault(u => u.GID == curGID);
 
             return Task.FromResult(existingModel);
 
         }
-        public Task<VehicleModel> GetVehicleByID(int id) //string gid)
+        public Task<VehicleModel> GetVehicleByID(int id)
         {
-            /*
-            Guid curGID = Guid.Empty;
-            Guid.TryParse(gid, out curGID);
-            */
-            //VehicleDbContext dbContext = new VehicleDbContext(_dbContextOptions);
             FuelAppDbContext dbContext = new FuelAppDbContext(_dbAppContextOptions);
             VehicleModel existingModel = dbContext.Vehicles.FirstOrDefault(u => u.Id == id);
 
@@ -64,9 +52,7 @@ namespace FuelApp.Services
             {
                 vehicleModel.GID = Guid.NewGuid();
             }
-            //_vehicleStore.Add(vehicleModel);
             FuelAppDbContext dbContext = new FuelAppDbContext(_dbAppContextOptions);
-            //VehicleDbContext vehicleDbContext = new VehicleDbContext(_dbContextOptions);
             dbContext.Vehicles.Add(vehicleModel);
             dbContext.SaveChanges();
 
@@ -81,7 +67,6 @@ namespace FuelApp.Services
         }
         public Task<bool> DeleteVehicle(int id) //VehicleModel vehicleModel)
         {
-            //VehicleDbContext dbContext = new VehicleDbContext(_dbContextOptions);
             FuelAppDbContext dbContext = new FuelAppDbContext(_dbAppContextOptions);
             VehicleModel existingModel = dbContext.Vehicles.FirstOrDefault(u => u.Id == id);
 

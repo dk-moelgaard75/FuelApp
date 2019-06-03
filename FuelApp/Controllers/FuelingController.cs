@@ -64,9 +64,8 @@ namespace FuelApp.Controllers
                 }
                 else
                 {
-                    fueling.VehicleName = "VEHICLE DELETED";
+                    fueling.VehicleName = "UNKNOWN VEHICLE";
                 }
-                
             }
             return View(list);
         }

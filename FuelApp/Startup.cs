@@ -37,27 +37,15 @@ namespace FuelApp
             //Get SQL/EF connection info and setup configuration as singleton
             var conString = _configuration.GetConnectionString("DefaultConnection");
             services.AddEntityFrameworkSqlServer()
-                .AddDbContext<Data.UserDbContext>((serviceProvider, options) =>
+                .AddDbContext<Data.FuelAppDbContext>((serviceProvider, options) =>
                 options.UseSqlServer(conString)
                 .UseInternalServiceProvider(serviceProvider)
               );
 
-            //
+            //Adding EF configuration 
             var appContextOptionbuilder = new DbContextOptionsBuilder<FuelAppDbContext>().UseSqlServer(conString);
             services.AddSingleton(appContextOptionbuilder.Options);
             
-            //Adding EF configuration for user context
-            var dbUserContextOptionbuilder = new DbContextOptionsBuilder<UserDbContext>().UseSqlServer(conString);
-            services.AddSingleton(dbUserContextOptionbuilder.Options);
-
-            //Adding EF configuration for vehicle context
-            var dbVehicleContextOptionbuilder = new DbContextOptionsBuilder<VehicleDbContext>().UseSqlServer(conString);
-            services.AddSingleton(dbVehicleContextOptionbuilder.Options);
-
-            //Adding EF configuration for fueling context
-            var dbFuelingContextOptionbuilder = new DbContextOptionsBuilder<FuelingDbContext>().UseSqlServer(conString);
-            services.AddSingleton(dbFuelingContextOptionbuilder.Options);
-
             //Secure App with authentication thru cookie
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>

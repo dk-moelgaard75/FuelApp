@@ -10,14 +10,10 @@ namespace FuelApp.Services
 {
     public class FuelingService : IFuelingService
     {
-        private static DbContextOptions<FuelingDbContext> _dbContextOptions;
-        public FuelingService(DbContextOptions<FuelingDbContext> dbContextOptions)
+        private static DbContextOptions<FuelAppDbContext> _dbContextOptions;
+        public FuelingService(DbContextOptions<FuelAppDbContext> dbContextOptions)
         {
             _dbContextOptions = dbContextOptions;
-            FuelingDbContext fuelingDbContext = new FuelingDbContext(_dbContextOptions);
-            fuelingDbContext.Database.EnsureCreated();
-
-
         }
         public Task<bool> AddFueling(FuelingModel fuelingModel)
         {
@@ -25,15 +21,15 @@ namespace FuelApp.Services
             {
                 fuelingModel.GID = Guid.NewGuid();
             }
-            FuelingDbContext fuelingDbContext = new FuelingDbContext(_dbContextOptions);
-            fuelingDbContext.Add(fuelingModel);
-            fuelingDbContext.SaveChanges();
+            FuelAppDbContext dbContext = new FuelAppDbContext(_dbContextOptions);
+            dbContext.Add(fuelingModel);
+            dbContext.SaveChanges();
 
             return Task.FromResult(true);
         }
         public Task<bool> EditFueling(FuelingModel fuelingModel)
         {
-            FuelingDbContext dbContext = new FuelingDbContext(_dbContextOptions);
+            FuelAppDbContext dbContext = new FuelAppDbContext(_dbContextOptions);
 
             dbContext.Fuelings.Update(fuelingModel);
             dbContext.SaveChanges();
@@ -42,7 +38,7 @@ namespace FuelApp.Services
         }
         public Task<bool> DeleteFueling(int id)
         {
-            FuelingDbContext dbContext = new FuelingDbContext(_dbContextOptions);
+            FuelAppDbContext dbContext = new FuelAppDbContext(_dbContextOptions);
             FuelingModel existingModel = dbContext.Fuelings.FirstOrDefault(u => u.Id == id);
             if (existingModel != null)
             {
@@ -58,16 +54,14 @@ namespace FuelApp.Services
         
         public Task<List<FuelingModel>> GetFuelings()
         {
-            FuelingDbContext dbContext = new FuelingDbContext(_dbContextOptions);
+            FuelAppDbContext dbContext = new FuelAppDbContext(_dbContextOptions);
             List<FuelingModel> fuelings = dbContext.Fuelings.ToList();
-
             return Task.FromResult(fuelings);
         }
         public Task<List<FuelingModel>> GetFuelings(List<Guid> list)
         {
-            FuelingDbContext dbContext = new FuelingDbContext(_dbContextOptions);
+            FuelAppDbContext dbContext = new FuelAppDbContext(_dbContextOptions);
             List<FuelingModel> fuelings = dbContext.Fuelings.Where(f => list.Contains(f.VehicleGID)).ToList();
-
             return Task.FromResult(fuelings);
         }
 
@@ -76,16 +70,14 @@ namespace FuelApp.Services
         {
             Guid curGID = Guid.Empty;
             Guid.TryParse(gid, out curGID);
-            FuelingDbContext dbContext = new FuelingDbContext(_dbContextOptions);
+            FuelAppDbContext dbContext = new FuelAppDbContext(_dbContextOptions);
             FuelingModel existingModel = dbContext.Fuelings.FirstOrDefault(u => u.GID == curGID);
-            //TODO - check if existingModel is null
             return Task.FromResult(existingModel);
         }
         public Task<FuelingModel> GetFuelingByID(int Id)
         {
-            FuelingDbContext dbContext = new FuelingDbContext(_dbContextOptions);
+            FuelAppDbContext dbContext = new FuelAppDbContext(_dbContextOptions);
             FuelingModel existingModel = dbContext.Fuelings.FirstOrDefault(u => u.Id == Id);
-            //TODO - check if existingModel is null
             return Task.FromResult(existingModel);
 
         }

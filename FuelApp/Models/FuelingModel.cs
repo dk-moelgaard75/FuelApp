@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace FuelApp.Models
 {
@@ -18,6 +19,11 @@ namespace FuelApp.Models
         public float FuelAmount { get; set; }
         public float TotalPrice { get; set; }
         public int Mileage { get; set; }
+
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
+        [Display(Name = "dd-mm-yyyy")]
+        public DateTime FuelingDate { get; set; }
         [NotMapped]
         public string VehicleName { get; set; }
     }

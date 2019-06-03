@@ -11,8 +11,6 @@ namespace FuelApp.Utility
         {
             Gasoline,
             Diesel,
-            Electricity,
-            Hydrogen,
             Other
         }
     }
